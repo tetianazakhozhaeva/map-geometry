@@ -33,7 +33,6 @@ class DraggableLayer extends React.Component {
         // this._originalMapDragState = this._layer._map.dragging._enabled;
 
 
-
         // can we reliably save the map's draggable state?
         // (if the mouse up event happens outside the container, then the map can become undraggable)
         this._safeToCacheDragState = true;
@@ -69,26 +68,26 @@ class DraggableLayer extends React.Component {
         const el = this._layer._path;
 
         // if(!this._dragging) {
-            // set state
-            // this._dragging = true;
+        // set state
+        // this._dragging = true;
         //todo ???
-            L.DomUtil.addClass(el, 'leaflet-pm-dragging');
+        L.DomUtil.addClass(el, 'leaflet-pm-dragging');
 
-            // bring it to front to prevent drag interception
-            this._layer.bringToFront();
+        // bring it to front to prevent drag interception
+        this._layer.bringToFront();
 
-            // disbale map drag
-            // if(this._originalMapDragState) {
-            //     this._layer._map.dragging.disable();
-            // }
+        // disbale map drag
+        // if(this._originalMapDragState) {
+        //     this._layer._map.dragging.disable();
+        // }
 
 
-            //todo hide markers
-            // this._markerGroup.clearLayers();
-            this.clearVertexes();
+        //todo hide markers
+        // this._markerGroup.clearLayers();
+        this.clearVertexes();
 
-            // fire pm:dragstart event
-            // this._layer.fire('pm:dragstart');
+        // fire pm:dragstart event
+        // this._layer.fire('pm:dragstart');
         // }
 
         this._onLayerDrag(e);
@@ -116,7 +115,7 @@ class DraggableLayer extends React.Component {
         // create the new coordinates array
         let newCoords;
 
-        if(this.isPolygon()) {
+        if (this.isPolygon()) {
             newCoords = this._layer._latlngs.map(moveCoords, this);
         } else {
             newCoords = moveCoords(this._layer._latlngs);
@@ -143,7 +142,7 @@ class DraggableLayer extends React.Component {
 
         // todo re-enable map drag
         // if(this._originalMapDragState) {
-            this._layer._map.dragging.enable();
+        this._layer._map.dragging.enable();
         // }
 
         // if mouseup event fired, it's safe to cache the map draggable state on the next mouse down
@@ -166,20 +165,19 @@ class DraggableLayer extends React.Component {
         // timeout to prevent click event after drag :-/
         // TODO: do it better as soon as leaflet has a way to do it better :-)
         // window.setTimeout(() => {
-            // set state
-            // this._dragging = false;
-            L.DomUtil.removeClass(el, 'leaflet-pm-dragging');
+        // set state
+        // this._dragging = false;
+        L.DomUtil.removeClass(el, 'leaflet-pm-dragging');
 
-            // fire pm:dragend event
-            // this._layer.fire('pm:dragend');
+        // fire pm:dragend event
+        // this._layer.fire('pm:dragend');
 
-            // fire edit
-            // this._fireEdit();
+        // fire edit
+        // this._fireEdit();
         // }, 10);
 
         return true;
     }
-
 
 
 }

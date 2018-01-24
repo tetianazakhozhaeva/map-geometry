@@ -1,8 +1,24 @@
 import React from 'react';
 import Vertex from './vertex'
+import PropTypes from 'prop-types';
+import L from 'leaflet';
 
-class Vertexes extends React.Component{
-    render(){
+class Vertexes extends React.Component {
+
+
+    constructor() {
+        super();
+
+        this.updateVertexes = this.updateVertexes.bind(this);
+    }
+
+    updateVertexes(latLngDiff) {
+        // todo !!!
+        // let rect = L.rectangle([0, 0]);
+
+    }
+
+    render() {
 
         let options = {
             radius: 10,
@@ -15,11 +31,14 @@ class Vertexes extends React.Component{
 
         let markerVertexes = this.props.vertexes.map(
             (vertex, index) => {
-                return <Vertex
-                    key={index}
-                    center={vertex}
-                    options = {options}
-                />
+                return (
+                    <Vertex
+                        key={index}
+                        center={vertex}
+                        options={options}
+                        updateVertexes={this.updateVertexes}
+                    />
+                )
             }
         );
 
@@ -32,3 +51,7 @@ class Vertexes extends React.Component{
 }
 
 export default Vertexes;
+
+Vertexes.contextTypes = {
+    map: PropTypes.object
+}

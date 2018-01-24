@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import './App.css';
 import {Map, TileLayer} from 'react-leaflet';
-// import EditRectangle from './components/edit-rectangle';
 import EditLayer from './components/edit-layer';
 
 class App extends Component {

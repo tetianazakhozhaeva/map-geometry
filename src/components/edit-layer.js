@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import {CircleMarker} from 'react-leaflet';
 import EditRectangle from './edit-rectangle';
 import Vertexes from './vertexes';
@@ -37,3 +38,7 @@ class EditLayer extends React.Component {
 }
 
 export default EditLayer;
+
+EditLayer.contextTypes = {
+    map: PropTypes.object
+}
