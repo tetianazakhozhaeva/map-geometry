@@ -28,9 +28,11 @@ class EditLayer extends React.Component {
             <div>
                 <EditRectangle
                     setVertexes={this.setVertexes}
+                    vertexes = {this.state.vertexes}
                 />
                 <Vertexes
                     vertexes = {this.state.vertexes}
+                    setVertexes={this.setVertexes}
                 />
             </div>
         )

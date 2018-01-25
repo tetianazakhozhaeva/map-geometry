@@ -19,6 +19,12 @@ class Vertex extends React.Component {
         this.init();
     }
 
+    componentWillReceiveProps(nextProps){
+        if(nextProps.center !== this.props.center){
+            this.vertex.setLatLng(nextProps.center)
+        }
+    }
+
     init() {
         this.vertex.on('mousedown', this.handleMouseDown)
     }
@@ -30,6 +36,8 @@ class Vertex extends React.Component {
         this._tempDragCoord = e.latlng;
 
 
+        this.props.setRectPosition();
+
         this.context.map.on('mousemove', this.handleMouseMove);
 
         this.vertex.on('mouseup', this.handleMouseUp);
@@ -38,7 +46,24 @@ class Vertex extends React.Component {
     handleMouseMove(e) {
 // latLng of mouse event
         const latlng = e.latlng;
+// todo ????
+        this.vertex.setLatLng(latlng)
 
+
+        // delta coords (how far was dragged)
+        const deltaLatLng = {
+            lat: latlng.lat - this._tempDragCoord.lat,
+            lng: latlng.lng - this._tempDragCoord.lng,
+        };
+        this.props.updateVertexes(deltaLatLng, this.props.index, latlng);
+
+    }
+
+    handleMouseUp(e) {
+
+        const latlng = e.latlng;
+// todo ????
+        /*
         this.vertex.setLatLng(latlng)
 
 
@@ -48,10 +73,11 @@ class Vertex extends React.Component {
             lng: latlng.lng - this._tempDragCoord.lng,
         };
 
-        // this.props.updateVertexes(deltaLatLng);
-    }
+        this.props.updateVertexes(deltaLatLng, this.props.index, latlng);
+*/
+        ///-----------------------
 
-    handleMouseUp(e) {
+        this.props.saveRect();
 
         this.context.map.off('mousemove', this.handleMouseMove);
         this.vertex.off('mouseup', this.handleMouseUp);
