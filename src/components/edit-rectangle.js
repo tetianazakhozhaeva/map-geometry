@@ -24,7 +24,7 @@ class EditRectangle extends DraggableLayer {
     }
 
     componentWillReceiveProps(nextProps) {
-        if (nextProps.vertexes !== this.props.vertexes) {
+        if (nextProps.vertexes !== this.props.vertexes && !this.dragging) {
             this._layer.setLatLngs(nextProps.vertexes);
         }
     }

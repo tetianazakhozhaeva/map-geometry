@@ -49,8 +49,7 @@ class Vertexes extends React.Component {
 
         let _oppositeCornerLatLng = corners[opposite];
 
-        // this._rect.setBounds(L.latLngBounds([newLatLng, _oppositeCornerLatLng]));
-        this._rect.setBounds([_oppositeCornerLatLng, newLatLng]);
+        this._rect.setBounds(L.latLngBounds([newLatLng, _oppositeCornerLatLng]));
     }
 
     saveRect() {

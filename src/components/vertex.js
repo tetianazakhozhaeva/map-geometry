@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 class Vertex extends React.Component {
 
-    constructor(){
+    constructor() {
         super();
 
         this.handleMouseDown = this.handleMouseDown.bind(this);
@@ -19,8 +19,8 @@ class Vertex extends React.Component {
         this.init();
     }
 
-    componentWillReceiveProps(nextProps){
-        if(nextProps.center !== this.props.center){
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.center !== this.props.center) {
             this.vertex.setLatLng(nextProps.center)
         }
     }
@@ -35,7 +35,6 @@ class Vertex extends React.Component {
 
         this._tempDragCoord = e.latlng;
 
-
         this.props.setRectPosition();
 
         this.context.map.on('mousemove', this.handleMouseMove);
@@ -44,11 +43,10 @@ class Vertex extends React.Component {
     }
 
     handleMouseMove(e) {
-// latLng of mouse event
+        // latLng of mouse event
         const latlng = e.latlng;
-// todo ????
-        this.vertex.setLatLng(latlng)
 
+        this.vertex.setLatLng(latlng)
 
         // delta coords (how far was dragged)
         const deltaLatLng = {
@@ -59,30 +57,14 @@ class Vertex extends React.Component {
 
     }
 
-    handleMouseUp(e) {
-
-        const latlng = e.latlng;
-// todo ????
-        /*
-        this.vertex.setLatLng(latlng)
-
-
-        // delta coords (how far was dragged)
-        const deltaLatLng = {
-            lat: latlng.lat - this._tempDragCoord.lat,
-            lng: latlng.lng - this._tempDragCoord.lng,
-        };
-
-        this.props.updateVertexes(deltaLatLng, this.props.index, latlng);
-*/
-        ///-----------------------
+    handleMouseUp() {
 
         this.props.saveRect();
 
         this.context.map.off('mousemove', this.handleMouseMove);
         this.vertex.off('mouseup', this.handleMouseUp);
 
-        // todo disabale map dragging
+        // todo enable map dragging
         this.context.map.dragging.enable();
     }
 
@@ -91,7 +73,7 @@ class Vertex extends React.Component {
         return null;
     }
 
-    componentWillUnmount(){
+    componentWillUnmount() {
         this.vertex.off('mousedown', this.handleMouseDown)
         this.context.map.off('mousemove', this.handleMouseMove);
         this.vertex.off('mouseup', this.handleMouseUp);
