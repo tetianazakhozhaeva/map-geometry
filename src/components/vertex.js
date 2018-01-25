@@ -46,6 +46,10 @@ class Vertex extends React.Component {
         // latLng of mouse event
         const latlng = e.latlng;
 
+        if(this.outOfBounds(latlng)){
+            return;
+        }
+
         this.vertex.setLatLng(latlng)
 
         // delta coords (how far was dragged)
@@ -59,7 +63,7 @@ class Vertex extends React.Component {
 
     handleMouseUp() {
 
-        this.props.saveRect();
+        // this.props.saveRect();
 
         this.context.map.off('mousemove', this.handleMouseMove);
         this.vertex.off('mouseup', this.handleMouseUp);
@@ -68,6 +72,15 @@ class Vertex extends React.Component {
         this.context.map.dragging.enable();
     }
 
+
+    // todo util outOfBounds
+    outOfBounds(position) {
+        const {map} = this.context;
+        return map.getBounds().getEast() <= position.lng
+            || map.getBounds().getWest() >= position.lng
+            || map.getBounds().getNorth() <= position.lat
+            || map.getBounds().getSouth() >= position.lat
+    }
 
     render() {
         return null;

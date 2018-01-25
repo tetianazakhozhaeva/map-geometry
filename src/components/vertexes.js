@@ -26,8 +26,14 @@ class Vertexes extends React.Component {
     setRectPosition() {
         let initialLatLngs = this.props.vertexes;
         this._rect.setLatLngs(initialLatLngs);
+
+
+
+        this._initialRectLatLngs = this.props.vertexes.slice();
     }
 
+
+    // todo remove
     updateLatLngDiff(latLngDiff) {
         this.setState({
             latLngDiff: latLngDiff
@@ -36,7 +42,8 @@ class Vertexes extends React.Component {
 
     updateVertexes(latLngDiff, index, newLatLng) {
 
-        const corners = this.props.vertexes;
+        // const corners = this.props.vertexes;
+        const corners = this._initialRectLatLngs;
 
         console.log('index')
         console.log(index)
@@ -50,6 +57,8 @@ class Vertexes extends React.Component {
         let _oppositeCornerLatLng = corners[opposite];
 
         this._rect.setBounds(L.latLngBounds([newLatLng, _oppositeCornerLatLng]));
+
+    this.saveRect();
     }
 
     saveRect() {
