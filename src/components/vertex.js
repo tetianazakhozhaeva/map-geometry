@@ -39,14 +39,14 @@ class Vertex extends React.Component {
 
         this.context.map.on('mousemove', this.handleMouseMove);
 
-        this.vertex.on('mouseup', this.handleMouseUp);
+        document.addEventListener('mouseup', this.handleMouseUp);
     }
 
     handleMouseMove(e) {
         // latLng of mouse event
         const latlng = e.latlng;
 
-        if(this.outOfBounds(latlng)){
+        if (this.outOfBounds(latlng)) {
             return;
         }
 
@@ -66,7 +66,7 @@ class Vertex extends React.Component {
         // this.props.saveRect();
 
         this.context.map.off('mousemove', this.handleMouseMove);
-        this.vertex.off('mouseup', this.handleMouseUp);
+        document.removeEventListener('mouseup', this.handleMouseUp);
 
         // todo enable map dragging
         this.context.map.dragging.enable();
