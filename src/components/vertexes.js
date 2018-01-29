@@ -13,52 +13,32 @@ class Vertexes extends React.Component {
         };
 
         this.updateVertexes = this.updateVertexes.bind(this);
-        this.updateLatLngDiff = this.updateLatLngDiff.bind(this);
         this.setRectPosition = this.setRectPosition.bind(this);
         this.saveRect = this.saveRect.bind(this);
     }
 
     componentDidMount() {
         this._rect = L.rectangle([{lat: 0, lng: 0}, {lat: 0, lng: 0}], {color: 'red'});
-        this._rect.addTo(this.context.map);
     }
 
     setRectPosition() {
         let initialLatLngs = this.props.vertexes;
         this._rect.setLatLngs(initialLatLngs);
 
-
-
         this._initialRectLatLngs = this.props.vertexes.slice();
     }
 
-
-    // todo remove
-    updateLatLngDiff(latLngDiff) {
-        this.setState({
-            latLngDiff: latLngDiff
-        })
-    }
-
     updateVertexes(latLngDiff, index, newLatLng) {
-
-        // const corners = this.props.vertexes;
         const corners = this._initialRectLatLngs;
-
-        console.log('index')
-        console.log(index)
 
         let opposite = index + 2;
         opposite = (opposite > 3) ? opposite - 4 : opposite;
-
-        console.log('opposite index')
-        console.log(opposite)
 
         let _oppositeCornerLatLng = corners[opposite];
 
         this._rect.setBounds(L.latLngBounds([newLatLng, _oppositeCornerLatLng]));
 
-    this.saveRect();
+        this.saveRect();
     }
 
     saveRect() {
@@ -96,7 +76,6 @@ class Vertexes extends React.Component {
             }
         );
 
-
         return (
             <div>
                 {markerVertexes}
@@ -109,4 +88,4 @@ export default Vertexes;
 
 Vertexes.contextTypes = {
     map: PropTypes.object
-}
+};
