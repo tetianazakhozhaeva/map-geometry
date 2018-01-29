@@ -21,24 +21,54 @@ class Vertexes extends React.Component {
         this._rect = L.rectangle([{lat: 0, lng: 0}, {lat: 0, lng: 0}], {color: 'red'});
     }
 
-    setRectPosition() {
+    setRectPosition(initialLatLng) {
         let initialLatLngs = this.props.vertexes;
+
         this._rect.setLatLngs(initialLatLngs);
 
-        this._initialRectLatLngs = this.props.vertexes.slice();
+        let bounds = this._rect.getBounds();
+        this._center = bounds.getCenter();
+
+        this._initialRadius = this.getDistance(this._center, initialLatLng);
+    }
+
+
+    // todo get distance
+    getDistance(center, latLng) {
+        return center.distanceTo(latLng);
+    }
+
+    // todo getOuterPointOnCircle
+    getOuterPointOnCircle(bearing, center, radius) {
+        const EARTH_RADIUS = 6371e3,
+            brng = bearing * Math.PI / 180,
+            d = radius,
+            startLat = center.lat * Math.PI / 180,
+            startLng = center.lng * Math.PI / 180;
+
+        let lat = Math.asin(Math.sin(startLat) * Math.cos(d / EARTH_RADIUS) +
+            Math.cos(startLat) * Math.sin(d / EARTH_RADIUS) * Math.cos(brng));
+        let lng = startLng + Math.atan2(Math.sin(brng) * Math.sin(d / EARTH_RADIUS) * Math.cos(startLat),
+            Math.cos(d / EARTH_RADIUS) - Math.sin(startLat) * Math.sin(lat));
+
+
+        return {lat: lat * 180 / Math.PI, lng: lng * 180 / Math.PI};
     }
 
     updateVertexes(latLngDiff, index, newLatLng) {
-        const corners = this._initialRectLatLngs;
 
-        let opposite = index + 2;
-        opposite = (opposite > 3) ? opposite - 4 : opposite;
+        // todo detect new radius
+        let newRadius = this.getDistance(this._center, newLatLng)
 
-        let _oppositeCornerLatLng = corners[opposite];
+        if (newRadius !== this._initialRadius) {
+            // todo detect new corner coords
+            let corner1 = this.getOuterPointOnCircle(45, this._center, newRadius),
+                corner2 = this.getOuterPointOnCircle(225, this._center, newRadius);
 
-        this._rect.setBounds(L.latLngBounds([newLatLng, _oppositeCornerLatLng]));
+            this._rect.setBounds(L.latLngBounds([corner1, corner2]));
 
-        this.saveRect();
+            this.saveRect();
+        }
     }
 
     saveRect() {

@@ -35,7 +35,7 @@ class Vertex extends React.Component {
 
         this._tempDragCoord = e.latlng;
 
-        this.props.setRectPosition();
+        this.props.setRectPosition(this._tempDragCoord);
 
         this.context.map.on('mousemove', this.handleMouseMove);
 
@@ -49,7 +49,7 @@ class Vertex extends React.Component {
         if (this.outOfBounds(latlng)) {
             return;
         }
-
+// todo ????
         this.vertex.setLatLng(latlng)
 
         // delta coords (how far was dragged)
