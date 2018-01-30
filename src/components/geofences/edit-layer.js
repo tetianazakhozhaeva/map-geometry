@@ -4,6 +4,8 @@ import EditRectangle from './edit-rectangle';
 import Vertexes from './vertexes';
 import './css/layers.css'
 
+import {connect} from 'react-redux';
+
 class EditLayer extends React.Component {
 
     constructor() {
@@ -38,8 +40,14 @@ class EditLayer extends React.Component {
     }
 }
 
-export default EditLayer;
-
 EditLayer.contextTypes = {
     map: PropTypes.object
 };
+
+const mapStateToProps = (state) => ({
+    isEditing: state.reducer.isEditing,
+});
+
+export default connect(
+    mapStateToProps
+)(EditLayer);

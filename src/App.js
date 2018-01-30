@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
 import './App.css';
 import {Map, TileLayer} from 'react-leaflet';
-import EditLayer from './components/edit-layer';
+import EditLayer from './components/geofences/edit-layer';
+import Buttons from './components/buttons/buttons';
 
 class App extends Component {
 
@@ -27,6 +28,7 @@ class App extends Component {
                         />
                         <EditLayer />
                     </Map>
+                    <Buttons />
                 </div>
             </div>
         );
