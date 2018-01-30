@@ -12,14 +12,10 @@ class EditRectangle extends DraggableLayer {
         super();
 
         this.init = this.init.bind(this);
-
         this.clearVertexes = this.clearVertexes.bind(this);
     }
 
     componentDidMount() {
-
-        console.log('EditRectangle componentDidMount');
-
         this.init();
     }
 
@@ -38,7 +34,6 @@ class EditRectangle extends DraggableLayer {
         console.log(vertexes);
         this.props.setVertexes(vertexes[0]);
     }
-
 
     init() {
         const center = this.context.map.getCenter();
