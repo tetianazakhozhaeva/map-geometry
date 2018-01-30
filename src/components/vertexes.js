@@ -3,6 +3,9 @@ import Vertex from './vertex'
 import PropTypes from 'prop-types';
 import L from 'leaflet';
 
+const RADIUS_MAX_LIMIT = 500000,
+      RADIUS_MIN_LIMIT = 100;
+
 class Vertexes extends React.Component {
 
     constructor() {
@@ -18,6 +21,7 @@ class Vertexes extends React.Component {
     }
 
     componentDidMount() {
+        // help rectangle
         this._rect = L.rectangle([{lat: 0, lng: 0}, {lat: 0, lng: 0}], {color: 'red'});
     }
 
@@ -31,7 +35,6 @@ class Vertexes extends React.Component {
 
         this._initialRadius = this.getDistance(this._center, initialLatLng);
     }
-
 
     // todo get distance
     getDistance(center, latLng) {
@@ -51,17 +54,17 @@ class Vertexes extends React.Component {
         let lng = startLng + Math.atan2(Math.sin(brng) * Math.sin(d / EARTH_RADIUS) * Math.cos(startLat),
             Math.cos(d / EARTH_RADIUS) - Math.sin(startLat) * Math.sin(lat));
 
-
         return {lat: lat * 180 / Math.PI, lng: lng * 180 / Math.PI};
     }
 
-    updateVertexes(latLngDiff, index, newLatLng) {
+    updateVertexes(newLatLng) {
 
-        // todo detect new radius
-        let newRadius = this.getDistance(this._center, newLatLng)
+        let newRadius = this.getDistance(this._center, newLatLng);
 
-        if (newRadius !== this._initialRadius) {
-            // todo detect new corner coords
+        if (newRadius !== this._initialRadius
+            && newRadius <= RADIUS_MAX_LIMIT
+            && newRadius >= RADIUS_MIN_LIMIT) {
+            // detect new corner coords
             let corner1 = this.getOuterPointOnCircle(45, this._center, newRadius),
                 corner2 = this.getOuterPointOnCircle(225, this._center, newRadius);
 
@@ -95,7 +98,6 @@ class Vertexes extends React.Component {
                 return (
                     <Vertex
                         key={index}
-                        index={index}
                         center={vertex}
                         options={options}
                         updateVertexes={this.updateVertexes}

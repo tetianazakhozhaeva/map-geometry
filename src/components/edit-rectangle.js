@@ -60,7 +60,6 @@ class EditRectangle extends DraggableLayer {
         this._initDraggableLayer();
     }
 
-
     render() {
         return null;
     }
@@ -70,4 +69,4 @@ export default EditRectangle;
 
 EditRectangle.contextTypes = {
     map: PropTypes.object
-}
+};

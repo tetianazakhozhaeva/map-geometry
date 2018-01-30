@@ -49,22 +49,11 @@ class Vertex extends React.Component {
         if (this.outOfBounds(latlng)) {
             return;
         }
-// todo ????
-        this.vertex.setLatLng(latlng)
 
-        // delta coords (how far was dragged)
-        const deltaLatLng = {
-            lat: latlng.lat - this._tempDragCoord.lat,
-            lng: latlng.lng - this._tempDragCoord.lng,
-        };
-        this.props.updateVertexes(deltaLatLng, this.props.index, latlng);
-
+        this.props.updateVertexes(latlng);
     }
 
     handleMouseUp() {
-
-        // this.props.saveRect();
-
         this.context.map.off('mousemove', this.handleMouseMove);
         document.removeEventListener('mouseup', this.handleMouseUp);
 
@@ -99,4 +88,4 @@ export default Vertex;
 
 Vertex.contextTypes = {
     map: PropTypes.object
-}
+};
