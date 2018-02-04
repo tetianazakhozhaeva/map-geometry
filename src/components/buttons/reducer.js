@@ -16,7 +16,7 @@ export default handleActions({
             ...state.buffer,
             notice: {
                 coordinates: [
-                    {lat: 0, lng: 0},
+                    {x: 0, y: 0},
                 ]
             }
         }
@@ -28,10 +28,11 @@ export default handleActions({
             ...state.buffer,
             notice: {
                 coordinates: [
-                    {lat: 50, lng: 36},
-                    {lat: 51, lng: 36},
-                    {lat: 51, lng: 37},
-                    {lat: 50, lng: 37},
+                    {x: 50, y: 36},
+                    {x: 51, y: 36},
+                    {x: 51, y: 37},
+                    {x: 50, y: 37},
+                    {x: 50, y: 36},
                 ]
             }
         }
