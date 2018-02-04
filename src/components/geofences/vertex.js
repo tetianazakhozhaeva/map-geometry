@@ -15,7 +15,7 @@ class Vertex extends React.Component {
     componentDidMount() {
         this.vertex = L.circleMarker(this.props.center, this.props.options);
         this.vertex.addTo(this.context.map);
-
+        this.vertex.bringToFront();
         this.init();
     }
 

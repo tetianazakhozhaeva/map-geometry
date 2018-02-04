@@ -93,6 +93,9 @@ class Vertexes extends React.Component {
             weight: 1
         };
 
+        if(!this.props.vertexes)
+            return null;
+
         let markerVertexes = this.props.vertexes.map(
             (vertex, index) => {
                 return (
