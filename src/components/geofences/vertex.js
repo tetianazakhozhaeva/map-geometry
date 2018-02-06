@@ -15,7 +15,7 @@ class Vertex extends React.Component {
     componentDidMount() {
         this.vertex = L.circleMarker(this.props.center, this.props.options);
         this.vertex.addTo(this.context.map);
-        this.vertex.bringToFront();
+
         this.init();
     }
 
@@ -30,12 +30,12 @@ class Vertex extends React.Component {
     }
 
     handleMouseDown(e) {
-        // todo disabale map dragging
+        // disabale map dragging
         this.context.map.dragging.disable();
 
         this._tempDragCoord = e.latlng;
 
-        this.props.setRectPosition(this._tempDragCoord);
+        this.props.setRectPosition();
 
         this.context.map.on('mousemove', this.handleMouseMove);
 
@@ -50,14 +50,23 @@ class Vertex extends React.Component {
             return;
         }
 
-        this.props.updateVertexes(latlng);
+        this.vertex.setLatLng(latlng);
+
+        // delta coords (how far was dragged)
+        const deltaLatLng = {
+            lat: latlng.lat - this._tempDragCoord.lat,
+            lng: latlng.lng - this._tempDragCoord.lng,
+        };
+        this.props.updateVertexes(deltaLatLng, this.props.index, latlng);
+
     }
 
     handleMouseUp() {
+
         this.context.map.off('mousemove', this.handleMouseMove);
         document.removeEventListener('mouseup', this.handleMouseUp);
 
-        // todo enable map dragging
+        // enable map dragging
         this.context.map.dragging.enable();
     }
 
@@ -76,7 +85,7 @@ class Vertex extends React.Component {
     }
 
     componentWillUnmount() {
-        this.vertex.off('mousedown', this.handleMouseDown)
+        this.vertex.off('mousedown', this.handleMouseDown);
         this.context.map.off('mousemove', this.handleMouseMove);
         this.vertex.off('mouseup', this.handleMouseUp);
 
