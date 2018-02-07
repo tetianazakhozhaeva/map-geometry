@@ -25,14 +25,77 @@ class DrawRectangle extends DraggableLayer {
     }
 
     clearVertexes() {
+        this.props.setMiddleMarkers([]);
         this.props.setVertexes([]);
     }
 
     _initVertexes() {
         let vertexes = this._layer.getLatLngs();
         console.log(vertexes);
-        this.props.setVertexes(vertexes[0]);
+
+        let mainVertexes = vertexes[0];
+
+        // todo detect middle points
+        let middlePoints = this.detectMiddlePoints(mainVertexes);
+
+        this.props.setMiddleMarkers(middlePoints);
+        this.props.setVertexes(mainVertexes);
     }
+
+    // todo detect middle points
+    detectMiddlePoints(mainMarkers){
+        return mainMarkers.map((m, index) => {
+
+            let nextIndex;
+            if(this.isPolygon()){
+                nextIndex = (index + 1) % mainMarkers.length;
+            } else {
+                nextIndex = index + 1;
+            }
+
+            return this._createMiddleMarker(mainMarkers[index], mainMarkers[nextIndex], index);
+        })
+    }
+
+    // creates the middle markes between coordinates
+    _createMiddleMarker(leftM, rightM, middleIndex) {
+        // cancel if there are no two markers
+        if (!leftM || !rightM) {
+            return false;
+        }
+
+        const latlng = this._calcMiddleLatLng(leftM, rightM);
+
+        const middleMarker = {
+            lat: latlng.lat,
+            lng: latlng.lng,
+            isMiddle: true,
+            leftMarker: Object.assign({}, leftM),
+            rightMarker: Object.assign({}, rightM),
+            index: middleIndex
+        };
+
+        // save reference to this middle markers on the neighboor regular markers
+        leftM._middleMarkerNext = middleMarker;
+        rightM._middleMarkerPrev = middleMarker;
+
+        return middleMarker;
+    }
+
+    _calcMiddleLatLng(latlng1, latlng2) {
+        // calculate the middle coordinates between two markers
+        // TODO: put this into a utils.js or something
+
+        const map = this.context.map;
+        const p1 = map.project(latlng1);
+        const p2 = map.project(latlng2);
+
+        const latlng = map.unproject(p1._add(p2)._divideBy(2));
+
+        return latlng;
+    }
+
+
 
     init() {
         const center = this.context.map.getCenter();

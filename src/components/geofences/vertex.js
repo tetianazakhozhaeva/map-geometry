@@ -30,7 +30,7 @@ class Vertex extends React.Component {
     }
 
     handleMouseDown(e) {
-        // disabale map dragging
+        // disable map dragging
         this.context.map.dragging.disable();
 
         this._tempDragCoord = e.latlng;

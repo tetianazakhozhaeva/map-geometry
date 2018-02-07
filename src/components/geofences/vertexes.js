@@ -2,6 +2,7 @@ import React from 'react';
 import Vertex from './vertex'
 import PropTypes from 'prop-types';
 import L from 'leaflet';
+import MiddleVertex from "./middle-vertex";
 
 class Vertexes extends React.Component {
 
@@ -17,36 +18,23 @@ class Vertexes extends React.Component {
         this.saveRect = this.saveRect.bind(this);
     }
 
-    componentDidMount() {
-        this._rect = L.rectangle([{lat: 0, lng: 0}, {lat: 0, lng: 0}], {color: 'red'});
-    }
-
     setRectPosition() {
-        let initialLatLngs = this.props.vertexes;
-        this._rect.setLatLngs(initialLatLngs);
-
         this._initialRectLatLngs = this.props.vertexes.slice();
+        this._initialMiddleLatLngs = this.props.vertexes.slice();
     }
 
     updateVertexes(latLngDiff, index, newLatLng) {
         const corners = this._initialRectLatLngs;
 
-        let opposite = index + 2;
-        opposite = (opposite > 3) ? opposite - 4 : opposite;
+        corners[index] = Object.assign({}, corners[index], newLatLng);
 
-        let _oppositeCornerLatLng = corners[opposite];
-
-        this._rect.setBounds(L.latLngBounds([newLatLng, _oppositeCornerLatLng]));
+        this._initialRectLatLngs = corners;
 
         this.saveRect();
     }
 
     saveRect() {
-        let coords = this._rect.getLatLngs()[0];
-
-        this._rect.setLatLngs([]);
-
-        this.props.setVertexes(coords);
+        this.props.setVertexes(this._initialRectLatLngs);
     }
 
     render() {
@@ -58,6 +46,15 @@ class Vertexes extends React.Component {
             opacity: 1,
             fillOpacity: 1,
             weight: 1
+        };
+
+        let optionsForMiddle = {
+            radius: 5,
+            color: '#2962ff',
+            fillColor: '#ffffff',
+            opacity: 1,
+            fillOpacity: 0.7,
+            weight: 2
         };
 
         let markerVertexes = this.props.vertexes.map(
@@ -76,9 +73,26 @@ class Vertexes extends React.Component {
             }
         );
 
+        let middleMarkers = this.props.middleMarkers.map(
+            (marker, index) => {
+                return (
+                    <MiddleVertex
+                        key={`middle${index}`}
+                        index={index}
+                        center={marker}
+                        options={optionsForMiddle}
+                        updateVertexes={this.updateVertexes}
+                        setRectPosition={this.setRectPosition}
+                        saveRect={this.saveRect}
+                    />
+                )
+            }
+        );
+
         return (
             <div>
                 {markerVertexes}
+                {middleMarkers}
             </div>
         );
     }

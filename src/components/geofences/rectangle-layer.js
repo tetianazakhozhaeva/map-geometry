@@ -13,9 +13,17 @@ class RectangleLayer extends React.Component {
 
         this.state = {
             vertexes: [],
+            middleMarkers: [],
         };
 
         this.setVertexes = this.setVertexes.bind(this);
+        this.setMiddleMarkers = this.setMiddleMarkers.bind(this);
+    }
+
+    setMiddleMarkers(middleMarkers){
+        this.setState({
+            middleMarkers: middleMarkers
+        });
     }
 
     setVertexes(latLngs) {
@@ -27,7 +35,7 @@ class RectangleLayer extends React.Component {
         if(!arr)
             return [];
         return arr.map(item => {
-            return {lat: item.x, lng: item.y}
+            return Object.assign({}, item, {lat: item.x, lng: item.y});
         });
     }
 
@@ -35,7 +43,7 @@ class RectangleLayer extends React.Component {
         if(!arr)
             return [];
         return arr.map(item => {
-            return {x: item.lat, y: item.lng}
+            return Object.assign({}, item, {x: item.lat, y: item.lng});
         });
     }
 
@@ -47,6 +55,7 @@ class RectangleLayer extends React.Component {
             <div>
                 {this.props.isCreate ?
                     <DrawRectangle
+                        setMiddleMarkers = {this.setMiddleMarkers}
                         setVertexes={this.setVertexes}
                         vertexes={latLngVertexes}
                     />
@@ -59,6 +68,7 @@ class RectangleLayer extends React.Component {
                 <Vertexes
                     setVertexes={this.setVertexes}
                     vertexes={latLngVertexes}
+                    middleMarkers = {this.state.middleMarkers}
                 />
             </div>
         )
