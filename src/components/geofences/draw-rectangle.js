@@ -41,27 +41,38 @@ class DrawRectangle extends DraggableLayer {
         // todo detect middle points
         let middlePoints = this.detectMiddlePoints(mainVertexes);
 
-        this.props.setMiddleMarkers(middlePoints);
-        this.props.setVertexes(mainVertexes);
+        let allVertexes = [];
+
+        let totalAmount = mainVertexes.length * 2;
+
+        for (let i = 0, k=0; i < totalAmount; i = i + 2, k++) {
+            allVertexes[i] = mainVertexes[k];
+            allVertexes[i + 1] = middlePoints[k];
+        }
+
+
+
+        // this.props.setMiddleMarkers(middlePoints);
+        this.props.setVertexes(allVertexes);
     }
 
     // todo detect middle points
-    detectMiddlePoints(mainMarkers){
+    detectMiddlePoints(mainMarkers) {
         return mainMarkers.map((m, index) => {
 
             let nextIndex;
-            if(this.isPolygon()){
+            if (this.isPolygon()) {
                 nextIndex = (index + 1) % mainMarkers.length;
             } else {
                 nextIndex = index + 1;
             }
 
-            return this._createMiddleMarker(mainMarkers[index], mainMarkers[nextIndex], index, nextIndex);
+            return this._createMiddleMarker(mainMarkers[index], mainMarkers[nextIndex]);
         })
     }
 
     // creates the middle markes between coordinates
-    _createMiddleMarker(leftM, rightM, index, nextIndex) {
+    _createMiddleMarker(leftM, rightM) {
         // cancel if there are no two markers
         if (!leftM || !rightM) {
             return false;
@@ -73,14 +84,7 @@ class DrawRectangle extends DraggableLayer {
             lat: latlng.lat,
             lng: latlng.lng,
             isMiddle: true,
-            leftMarker: Object.assign({}, leftM, {index: index}),
-            rightMarker: Object.assign({}, rightM, {index: nextIndex}),
-            index: index
         };
-
-        // save reference to this middle markers on the neighbor regular markers
-        leftM._middleMarkerNext = middleMarker;
-        rightM._middleMarkerPrev = middleMarker;
 
         return middleMarker;
     }
