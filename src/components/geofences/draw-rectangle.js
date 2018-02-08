@@ -22,8 +22,10 @@ class DrawRectangle extends DraggableLayer {
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.vertexes !== this.props.vertexes && !this.dragging) {
-            this._layer.setLatLngs(nextProps.vertexes);
 
+            let rareVertexes = nextProps.vertexes.filter(v => !v.isMiddle);
+
+            this._layer.setLatLngs(rareVertexes);
         }
     }
 
@@ -45,14 +47,11 @@ class DrawRectangle extends DraggableLayer {
 
         let totalAmount = mainVertexes.length * 2;
 
-        for (let i = 0, k=0; i < totalAmount; i = i + 2, k++) {
+        for (let i = 0, k = 0; i < totalAmount; i = i + 2, k++) {
             allVertexes[i] = mainVertexes[k];
             allVertexes[i + 1] = middlePoints[k];
         }
 
-
-
-        // this.props.setMiddleMarkers(middlePoints);
         this.props.setVertexes(allVertexes);
     }
 

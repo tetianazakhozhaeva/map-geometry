@@ -90,7 +90,6 @@ class Vertexes extends React.Component {
         }
     }
 
-
     updateMiddleVertexes(index, newLatLng) {
         const corners = this._initialRectLatLngs.slice();
 
@@ -120,7 +119,6 @@ class Vertexes extends React.Component {
 
         this.saveRect(this._newRectLatLngs);
     }
-
 
     render() {
 
@@ -173,7 +171,6 @@ class Vertexes extends React.Component {
                 }
             }
         );
-
 
         return (
             <div>
