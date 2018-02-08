@@ -20,3 +20,12 @@ export function getDistance(center, latLng) {
     return center.distanceTo(latLng);
 }
 
+export function calcMiddleLatLng(latlng1, latlng2, map) {
+    const p1 = map.project(latlng1);
+    const p2 = map.project(latlng2);
+
+    const latlng = map.unproject(p1._add(p2)._divideBy(2));
+
+    return latlng;
+}
+

@@ -5,6 +5,8 @@ import PropTypes from 'prop-types';
 import L from 'leaflet';
 import DraggableLayer from './draggable-layer'
 
+import {calcMiddleLatLng} from './geo-helper';
+
 class DrawRectangle extends DraggableLayer {
 
     constructor() {
@@ -64,7 +66,7 @@ class DrawRectangle extends DraggableLayer {
             return false;
         }
 
-        const latlng = this._calcMiddleLatLng(leftM, rightM);
+        const latlng = calcMiddleLatLng(leftM, rightM, this.context.map);
 
         const middleMarker = {
             lat: latlng.lat,
@@ -81,21 +83,6 @@ class DrawRectangle extends DraggableLayer {
 
         return middleMarker;
     }
-
-    _calcMiddleLatLng(latlng1, latlng2) {
-        // calculate the middle coordinates between two markers
-        // TODO: put this into a utils.js or something
-
-        const map = this.context.map;
-        const p1 = map.project(latlng1);
-        const p2 = map.project(latlng2);
-
-        const latlng = map.unproject(p1._add(p2)._divideBy(2));
-
-        return latlng;
-    }
-
-
 
     init() {
         const center = this.context.map.getCenter();

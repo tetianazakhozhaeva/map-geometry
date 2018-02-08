@@ -1,8 +1,9 @@
 import React from 'react';
 import Vertex from './vertex'
 import PropTypes from 'prop-types';
-import L from 'leaflet';
 import MiddleVertex from "./middle-vertex";
+
+import {calcMiddleLatLng} from './geo-helper';
 
 class Vertexes extends React.Component {
 
@@ -20,21 +21,50 @@ class Vertexes extends React.Component {
 
     setRectPosition() {
         this._initialRectLatLngs = this.props.vertexes.slice();
-        this._initialMiddleLatLngs = this.props.vertexes.slice();
+        this._initialMiddleLatLngs = this.props.middleMarkers.slice();
     }
 
     updateVertexes(latLngDiff, index, newLatLng) {
-        const corners = this._initialRectLatLngs;
+        const corners = this._initialRectLatLngs.slice();
+        const middleVertexes = this._initialMiddleLatLngs.slice();
 
-        corners[index] = Object.assign({}, corners[index], newLatLng);
+        let markerLatLng = Object.assign({}, corners[index], newLatLng);
 
+        // todo detect next and prev vertexes
+        const nextMarkerIndex = (index + 1) % corners.length;
+        const prevMarkerIndex = (index + corners.length - 1) % corners.length;
+
+
+        // get latlng of prev and next marker
+        const prevMarkerLatLng = corners[prevMarkerIndex];
+        const nextMarkerLatLng = corners[nextMarkerIndex];
+
+        if (markerLatLng._middleMarkerNext) {
+            const middleMarkerNextLatLng = calcMiddleLatLng(markerLatLng, nextMarkerLatLng, this.context.map);
+            markerLatLng._middleMarkerNext = Object.assign({}, corners[index]._middleMarkerNext, middleMarkerNextLatLng);
+        }
+
+        if (markerLatLng._middleMarkerPrev) {
+            const middleMarkerPrevLatLng = calcMiddleLatLng(markerLatLng, prevMarkerLatLng, this.context.map);
+            markerLatLng._middleMarkerPrev = Object.assign({}, corners[index]._middleMarkerPrev, middleMarkerPrevLatLng);
+        }
+
+        // todo update neighbor middle markers positions
+
+        middleVertexes.splice(markerLatLng._middleMarkerNext.index, 1, markerLatLng._middleMarkerNext);
+        middleVertexes.splice(markerLatLng._middleMarkerPrev.index, 1, markerLatLng._middleMarkerPrev);
+
+        corners[index] = Object.assign({}, markerLatLng);
         this._initialRectLatLngs = corners;
+
+        this._initialMiddleLatLngs = middleVertexes;
 
         this.saveRect();
     }
 
     saveRect() {
         this.props.setVertexes(this._initialRectLatLngs);
+        this.props.setMiddleMarkers(this._initialMiddleLatLngs);
     }
 
     render() {

@@ -67,6 +67,7 @@ class RectangleLayer extends React.Component {
                 }
                 <Vertexes
                     setVertexes={this.setVertexes}
+                    setMiddleMarkers={this.setMiddleMarkers}
                     vertexes={latLngVertexes}
                     middleMarkers = {this.state.middleMarkers}
                 />

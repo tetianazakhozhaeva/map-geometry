@@ -19,6 +19,12 @@ class MiddleVertex extends React.Component {
         // this.init();
     }
 
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.center !== this.props.center) {
+            this.vertex.setLatLng(nextProps.center)
+        }
+    }
+
     render() {
         return null;
     }
