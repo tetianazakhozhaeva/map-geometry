@@ -93,41 +93,32 @@ class Vertexes extends React.Component {
 
     updateMiddleVertexes(index, newLatLng) {
         const corners = this._initialRectLatLngs.slice();
-        const middleVertexes = this._initialMiddleLatLngs.slice();
 
-        let middleLatLng = Object.assign({}, middleVertexes[index], newLatLng);
+        let middleLatLng = Object.assign({}, corners[index], newLatLng, {isMiddle: false});
 
-// todo get left marker
-        let rightMarkerIndex = middleLatLng.rightMarker.index;
+        // todo detect next and prev vertexes
+        const nextMarkerIndex = (index + 1) % corners.length;
+        const prevMarkerIndex = (index + corners.length - 1) % corners.length;
 
-        corners.splice(rightMarkerIndex, 0, middleLatLng);
+        let nextMarkerLatLng = corners[nextMarkerIndex];
+        let prevMarkerLatLng = corners[prevMarkerIndex];
 
-// todo left marker middle
-//         let leftMarker = Object.assign({}, middleLatLng.leftMarker);
-// //
-// // todo right marker middle
-//         let rightMarker = Object.assign({}, middleLatLng.rightMarker);
-//
-//         if (leftMarker._middleMarkerNext) {
-//             const middleMarkerNextLatLng = calcMiddleLatLng(markerLatLng, nextMarkerLatLng, this.context.map);
-//             markerLatLng._middleMarkerNext = Object.assign({}, corners[index]._middleMarkerNext, middleMarkerNextLatLng);
-//         }
-//
-//         if (markerLatLng._middleMarkerPrev) {
-//             const middleMarkerPrevLatLng = calcMiddleLatLng(markerLatLng, prevMarkerLatLng, this.context.map);
-//             markerLatLng._middleMarkerPrev = Object.assign({}, corners[index]._middleMarkerPrev, middleMarkerPrevLatLng);
-//         }
 
+        // todo calc middles
+        const middleMarkerNextLatLng = calcMiddleLatLng(middleLatLng, nextMarkerLatLng, this.context.map);
+        let _middleMarkerNext = Object.assign({isMiddle: true}, middleMarkerNextLatLng);
+
+        const middleMarkerPrevLatLng = calcMiddleLatLng(middleLatLng, prevMarkerLatLng, this.context.map);
+        let _middleMarkerPrev = Object.assign({isMiddle: true}, middleMarkerPrevLatLng);
+
+
+        corners.splice(index, 1, _middleMarkerPrev, middleLatLng, _middleMarkerNext);
 
         this._helpingPolygon.setLatLngs(corners);
 
-
         this._newRectLatLngs = corners;
 
-        this._newMiddleLatLngs = middleVertexes;
-
-        this.saveRect(this._newRectLatLngs,
-            this._newMiddleLatLngs);
+        this.saveRect(this._newRectLatLngs);
     }
 
 
