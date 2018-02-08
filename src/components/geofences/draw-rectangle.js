@@ -23,6 +23,7 @@ class DrawRectangle extends DraggableLayer {
     componentWillReceiveProps(nextProps) {
         if (nextProps.vertexes !== this.props.vertexes && !this.dragging) {
             this._layer.setLatLngs(nextProps.vertexes);
+
         }
     }
 
@@ -55,12 +56,12 @@ class DrawRectangle extends DraggableLayer {
                 nextIndex = index + 1;
             }
 
-            return this._createMiddleMarker(mainMarkers[index], mainMarkers[nextIndex], index);
+            return this._createMiddleMarker(mainMarkers[index], mainMarkers[nextIndex], index, nextIndex);
         })
     }
 
     // creates the middle markes between coordinates
-    _createMiddleMarker(leftM, rightM, middleIndex) {
+    _createMiddleMarker(leftM, rightM, index, nextIndex) {
         // cancel if there are no two markers
         if (!leftM || !rightM) {
             return false;
@@ -72,12 +73,12 @@ class DrawRectangle extends DraggableLayer {
             lat: latlng.lat,
             lng: latlng.lng,
             isMiddle: true,
-            leftMarker: Object.assign({}, leftM),
-            rightMarker: Object.assign({}, rightM),
-            index: middleIndex
+            leftMarker: Object.assign({}, leftM, {index: index}),
+            rightMarker: Object.assign({}, rightM, {index: nextIndex}),
+            index: index
         };
 
-        // save reference to this middle markers on the neighboor regular markers
+        // save reference to this middle markers on the neighbor regular markers
         leftM._middleMarkerNext = middleMarker;
         rightM._middleMarkerPrev = middleMarker;
 
