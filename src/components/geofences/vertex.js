@@ -52,16 +52,13 @@ class Vertex extends React.Component {
 
         this.vertex.setLatLng(latlng);
 
-        // delta coords (how far was dragged)
-        const deltaLatLng = {
-            lat: latlng.lat - this._tempDragCoord.lat,
-            lng: latlng.lng - this._tempDragCoord.lng,
-        };
-        this.props.updateVertexes(deltaLatLng, this.props.index, latlng);
+        this.props.updateVertexes(this.props.index, latlng);
 
     }
 
     handleMouseUp() {
+
+        this.props.vertexDragend();
 
         this.context.map.off('mousemove', this.handleMouseMove);
         document.removeEventListener('mouseup', this.handleMouseUp);

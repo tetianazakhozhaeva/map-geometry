@@ -2,8 +2,10 @@ import React from 'react';
 import Vertex from './vertex'
 import PropTypes from 'prop-types';
 import MiddleVertex from "./middle-vertex";
-
+import L from 'leaflet';
 import {calcMiddleLatLng} from './geo-helper';
+
+import kinks from '@turf/kinks';
 
 class Vertexes extends React.Component {
 
@@ -17,14 +19,26 @@ class Vertexes extends React.Component {
         this.updateVertexes = this.updateVertexes.bind(this);
         this.setRectPosition = this.setRectPosition.bind(this);
         this.saveRect = this.saveRect.bind(this);
+        this.vertexDragend = this.vertexDragend.bind(this);
+    }
+
+    hasSelfIntersection() {
+        // check for self intersection of the layer and return true/false
+        const selfIntersection = kinks(this._helpingPolygon.toGeoJSON());
+        return selfIntersection.features.length > 0;
     }
 
     setRectPosition() {
+        this._helpingPolygon = L.polygon([[0, 0], [0, 0]]);
+
         this._initialRectLatLngs = this.props.vertexes.slice();
         this._initialMiddleLatLngs = this.props.middleMarkers.slice();
+
+        this._helpingPolygon.setLatLngs(this._initialRectLatLngs);
     }
 
-    updateVertexes(latLngDiff, index, newLatLng) {
+    updateVertexes(index, newLatLng) {
+
         const corners = this._initialRectLatLngs.slice();
         const middleVertexes = this._initialMiddleLatLngs.slice();
 
@@ -55,17 +69,30 @@ class Vertexes extends React.Component {
         middleVertexes.splice(markerLatLng._middleMarkerPrev.index, 1, markerLatLng._middleMarkerPrev);
 
         corners[index] = Object.assign({}, markerLatLng);
-        this._initialRectLatLngs = corners;
 
-        this._initialMiddleLatLngs = middleVertexes;
 
-        this.saveRect();
+        this._helpingPolygon.setLatLngs(corners);
+
+
+        this._newRectLatLngs = corners;
+
+        this._newMiddleLatLngs = middleVertexes;
+
+        this.saveRect(this._newRectLatLngs,
+                      this._newMiddleLatLngs);
     }
 
-    saveRect() {
-        this.props.setVertexes(this._initialRectLatLngs);
-        this.props.setMiddleMarkers(this._initialMiddleLatLngs);
+    saveRect(rectLatLngs, middleLatLngs) {
+        this.props.setVertexes(rectLatLngs);
+        this.props.setMiddleMarkers(middleLatLngs);
     }
+
+    vertexDragend(){
+        if(this.hasSelfIntersection()){
+           this.saveRect(this._initialRectLatLngs, this._initialMiddleLatLngs);
+        }
+    }
+
 
     render() {
 
@@ -98,6 +125,7 @@ class Vertexes extends React.Component {
                         updateVertexes={this.updateVertexes}
                         setRectPosition={this.setRectPosition}
                         saveRect={this.saveRect}
+                        vertexDragend={this.vertexDragend}
                     />
                 )
             }
