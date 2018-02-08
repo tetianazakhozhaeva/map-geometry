@@ -30,7 +30,6 @@ class DrawRectangle extends DraggableLayer {
     }
 
     clearVertexes() {
-        this.props.setMiddleMarkers([]);
         this.props.setVertexes([]);
     }
 
