@@ -1,5 +1,5 @@
-import React from 'react'
-import L from 'leaflet'
+import React from 'react';
+import L from 'leaflet';
 
 class DraggableLayer extends React.Component {
 
@@ -11,13 +11,9 @@ class DraggableLayer extends React.Component {
         this._dragMixinOnMouseMove = this._dragMixinOnMouseMove.bind(this);
     }
 
-    render() {
-        return null;
-    }
-
     isPolygon() {
         // if it's a polygon, it means the coordinates array is multi dimensional
-       return this._layer instanceof L.Polygon;
+        return this._layer instanceof L.Polygon;
     }
 
     _initDraggableLayer() {
@@ -99,6 +95,10 @@ class DraggableLayer extends React.Component {
         this._initVertexes();
 
         L.DomUtil.removeClass(el, 'leaflet-pm-dragging');
+    }
+
+    render() {
+        return null;
     }
 }
 
