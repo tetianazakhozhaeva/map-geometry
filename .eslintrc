@@ -9,7 +9,7 @@
   "parser": "babel-eslint",
   "rules": {
     // indentation
-    "indent": [ 2, 4 ],
+//    "indent": [ 2, 4 ],
 
     // spacing
 //    "space-in-parens": [ 2, "always" ],
@@ -25,6 +25,10 @@
     // code arrangement matter
     "no-use-before-define": [ 2, { "functions": false } ],
     "no-underscore-dangle": 0,
+    "no-console": 2,
+    "no-unused-vars": 2,
+    "no-mixed-operators": 0,
+    "no-plusplus": 0,
     // make it meaningful
     "prefer-const": 1,
 
@@ -35,6 +39,7 @@
     "react/prefer-es6-class": 0,
     "react/jsx-filename-extension": 0,
     "react/jsx-curly-spacing": [ 2, "always" ],
-    "react/jsx-indent": [ 2, 4 ]
+    "react/jsx-indent": [ 2, 4 ],
+    "react/forbid-prop-types": 0
   }
 }

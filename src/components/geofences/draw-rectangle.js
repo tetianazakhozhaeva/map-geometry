@@ -1,125 +1,128 @@
 /**
  * Created by tetiana on 23.01.18.
  */
-import PropTypes from 'prop-types';
+import { array, object, func } from 'prop-types';
 import L from 'leaflet';
-import DraggableLayer from './draggable-layer'
+import DraggableLayer from './draggable-layer';
 
-import {calcMiddleLatLng} from './geo-helper';
+import { calcMiddleLatLng } from './geo-helper';
 
 class DrawRectangle extends DraggableLayer {
+    static propTypes = {
+      vertexes: array,
+      setVertexes: func,
+    };
+
+    static contextTypes = {
+      map: object,
+    };
 
     constructor() {
-        super();
+      super();
 
-        this.init = this.init.bind(this);
-        this.clearVertexes = this.clearVertexes.bind(this);
+      this.init = this.init.bind(this);
+      this.clearVertexes = this.clearVertexes.bind(this);
     }
 
     componentDidMount() {
-        this.init();
+      this.init();
     }
 
     componentWillReceiveProps(nextProps) {
-        if (nextProps.vertexes !== this.props.vertexes && !this.dragging) {
+      if (nextProps.vertexes !== this.props.vertexes && !this.dragging) {
+        const rareVertexes = nextProps.vertexes.filter(v => !v.isMiddle);
 
-            let rareVertexes = nextProps.vertexes.filter(v => !v.isMiddle);
-
-            this._layer.setLatLngs(rareVertexes);
-        }
+        this._layer.setLatLngs(rareVertexes);
+      }
     }
 
     clearVertexes() {
-        this.props.setVertexes([]);
+      this.props.setVertexes([]);
     }
 
     _initVertexes() {
-        let vertexes = this._layer.getLatLngs();
-        console.log(vertexes);
+      const vertexes = this._layer.getLatLngs();
+      const mainVertexes = vertexes[ 0 ];
 
-        let mainVertexes = vertexes[0];
+      // detect middle points
+      const middlePoints = this.detectMiddlePoints(mainVertexes);
 
-        // todo detect middle points
-        let middlePoints = this.detectMiddlePoints(mainVertexes);
+      const allVertexes = [];
 
-        let allVertexes = [];
+      const totalAmount = mainVertexes.length * 2;
 
-        let totalAmount = mainVertexes.length * 2;
+      for (let i = 0, k = 0; i < totalAmount; i += 2, k++) {
+        allVertexes[ i ] = mainVertexes[ k ];
+        allVertexes[ i + 1 ] = middlePoints[ k ];
+      }
 
-        for (let i = 0, k = 0; i < totalAmount; i = i + 2, k++) {
-            allVertexes[i] = mainVertexes[k];
-            allVertexes[i + 1] = middlePoints[k];
-        }
-
-        this.props.setVertexes(allVertexes);
+      this.props.setVertexes(allVertexes);
     }
 
-    // todo detect middle points
+  // detect middle points
     detectMiddlePoints(mainMarkers) {
-        return mainMarkers.map((m, index) => {
-
-            let nextIndex;
-            if (this.isPolygon()) {
-                nextIndex = (index + 1) % mainMarkers.length;
-            } else {
-                nextIndex = index + 1;
-            }
-
-            return this._createMiddleMarker(mainMarkers[index], mainMarkers[nextIndex]);
-        })
-    }
-
-    // creates the middle markes between coordinates
-    _createMiddleMarker(leftM, rightM) {
-        // cancel if there are no two markers
-        if (!leftM || !rightM) {
-            return false;
+      return mainMarkers.map((m, index) => {
+        let nextIndex;
+        if (this.isPolygon()) {
+          nextIndex = (index + 1) % mainMarkers.length;
+        } else {
+          nextIndex = index + 1;
         }
 
-        const latlng = calcMiddleLatLng(leftM, rightM, this.context.map);
+        return this._createMiddleMarker(mainMarkers[ index ], mainMarkers[ nextIndex ]);
+      });
+    }
 
-        const middleMarker = {
-            lat: latlng.lat,
-            lng: latlng.lng,
-            isMiddle: true,
-        };
+  // creates the middle markes between coordinates
+    _createMiddleMarker(leftM, rightM) {
+    // cancel if there are no two markers
+      if (!leftM || !rightM) {
+        return false;
+      }
 
-        return middleMarker;
+      const latlng = calcMiddleLatLng(leftM, rightM, this.context.map);
+
+      const middleMarker = {
+        lat: latlng.lat,
+        lng: latlng.lng,
+        isMiddle: true,
+      };
+
+      return middleMarker;
     }
 
     init() {
-        const center = this.context.map.getCenter();
+      const center = this.context.map.getCenter();
 
-        let currentPoint = this.context.map.latLngToContainerPoint(center);
-        let width = 100;
-        let height = 100;
-        let xDifference = width / 2;
-        let yDifference = height / 2;
-        let southWest = L.point((currentPoint.x - xDifference), (currentPoint.y - yDifference));
-        let northEast = L.point((currentPoint.x + xDifference), (currentPoint.y + yDifference));
-        let bounds = L.latLngBounds(this.context.map.containerPointToLatLng(southWest), this.context.map.containerPointToLatLng(northEast));
-        this._layer = L.rectangle(bounds, {color: '#2962ff'});
-        this._layer.addTo(this.context.map);
-        this.context.map.fitBounds(this._layer.getBounds());
+      const currentPoint = this.context.map.latLngToContainerPoint(center);
+      const width = 100;
+      const height = 100;
+      const xDifference = width / 2;
+      const yDifference = height / 2;
+      const southWest = L.point((currentPoint.x - xDifference), (currentPoint.y - yDifference));
+      const northEast = L.point((currentPoint.x + xDifference), (currentPoint.y + yDifference));
+      const bounds = L.latLngBounds(
+        this.context.map.containerPointToLatLng(southWest),
+        this.context.map.containerPointToLatLng(northEast),
+      );
+      this._layer = L.rectangle(bounds, { color: '#2962ff' });
+      this._layer.addTo(this.context.map);
+      this.context.map.fitBounds(this._layer.getBounds());
 
-        this._layer.bringToBack();
+      this._layer.bringToBack();
 
-        this._initVertexes();
+      this._initVertexes();
 
-        this._initDraggableLayer();
+      this._initDraggableLayer();
     }
 
     render() {
-        return null;
+      return null;
     }
 
     componentWillUnmount() {
-        this.context.map.removeLayer(this._layer);
+      this.context.map.removeLayer(this._layer);
     }
 }
 
 export default DrawRectangle;
-
-DrawRectangle.contextTypes = {
-    map: PropTypes.object
-};

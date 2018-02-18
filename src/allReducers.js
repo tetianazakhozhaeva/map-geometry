@@ -1,9 +1,9 @@
-import {combineReducers} from 'redux';
+import { combineReducers } from 'redux';
 
 import reducer from './components/buttons/reducer';
 
 const allReducers = combineReducers({
-    reducer
+  reducer,
 });
 
 export default allReducers;
