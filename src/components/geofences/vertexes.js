@@ -44,7 +44,7 @@ class Vertexes extends React.Component {
 
       const markerLatLng = Object.assign({}, corners[ index ], newLatLng);
 
-      // todo detect next and prev vertexes
+      // detect next and prev vertexes
       const nextMarkerIndex = (index + 2) % corners.length;
       const prevMarkerIndex = (index + corners.length - 2) % corners.length;
 
@@ -55,7 +55,7 @@ class Vertexes extends React.Component {
       const prevMarkerLatLng = corners[ prevMarkerIndex ];
       const nextMarkerLatLng = corners[ nextMarkerIndex ];
 
-      // todo calc middles
+      // calc middles
       const middleMarkerNextLatLng = calcMiddleLatLng(
         markerLatLng,
         nextMarkerLatLng, this.context.map,
@@ -75,15 +75,13 @@ class Vertexes extends React.Component {
         middleMarkerPrevLatLng,
       );
 
-      // todo update neighbor middle markers positions
-
+      // update neighbor middle markers positions
       corners.splice(nextMiddleIndex, 1, _middleMarkerNext);
       corners.splice(prevMiddleIndex, 1, _middleMarkerPrev);
 
       corners[ index ] = Object.assign({}, markerLatLng);
 
       this._helpingPolygon.setLatLngs(corners);
-
       this._newRectLatLngs = corners;
 
       this.saveRect(this._newRectLatLngs);
@@ -101,17 +99,16 @@ class Vertexes extends React.Component {
 
     updateMiddleVertexes(index, newLatLng) {
       const corners = this._initialRectLatLngs.slice();
-
       const middleLatLng = Object.assign({}, corners[ index ], newLatLng, { isMiddle: false });
 
-      // todo detect next and prev vertexes
+      // detect next and prev vertexes
       const nextMarkerIndex = (index + 1) % corners.length;
       const prevMarkerIndex = (index + corners.length - 1) % corners.length;
 
       const nextMarkerLatLng = corners[ nextMarkerIndex ];
       const prevMarkerLatLng = corners[ prevMarkerIndex ];
 
-      // todo calc middles
+      // calc middles
       const middleMarkerNextLatLng = calcMiddleLatLng(
         middleLatLng,
         nextMarkerLatLng, this.context.map,
