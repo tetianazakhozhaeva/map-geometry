@@ -1,6 +1,7 @@
 import React from 'react';
 import L from 'leaflet';
 import { object, number, func } from 'prop-types';
+import { outOfBounds } from './geo-helper';
 
 class Vertex extends React.Component {
   static propTypes = {
@@ -65,7 +66,7 @@ class Vertex extends React.Component {
       // latLng of mouse event
       const { latlng } = e;
 
-      if (this.outOfBounds(latlng)) {
+      if (outOfBounds(latlng, this.context.map)) {
         return;
       }
 
@@ -82,15 +83,6 @@ class Vertex extends React.Component {
 
       // enable map dragging
       this.context.map.dragging.enable();
-    }
-
-  // todo util outOfBounds
-    outOfBounds(position) {
-      const { map } = this.context;
-      return map.getBounds().getEast() <= position.lng
-            || map.getBounds().getWest() >= position.lng
-            || map.getBounds().getNorth() <= position.lat
-            || map.getBounds().getSouth() >= position.lat;
     }
 
     render() {

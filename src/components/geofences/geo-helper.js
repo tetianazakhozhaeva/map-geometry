@@ -30,3 +30,10 @@ export function calcMiddleLatLng(latlng1, latlng2, map) {
 
   return latlng;
 }
+
+export function outOfBounds(position, map) {
+  return map.getBounds().getEast() <= position.lng
+    || map.getBounds().getWest() >= position.lng
+    || map.getBounds().getNorth() <= position.lat
+    || map.getBounds().getSouth() >= position.lat;
+}
